@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-HEIC Image Converter Tool
+Image Converter Tool
 
-This script converts HEIC images to PDF, PNG, or JPG format.
-Place HEIC files in the images/source folder and they will be converted to the images/output folder.
+This script converts images between different formats (HEIC, JPG, PNG to PDF, PNG, or JPG).
+Place image files in the images/source folder and they will be converted to the images/output folder.
 """
 
 import os
@@ -99,32 +99,36 @@ def clear_output_folder(output_folder, keep_readme=True):
         logging.info("Output folder is already clean")
 
 
-def get_heic_files(source_folder):
+def get_image_files(source_folder):
     """
-    Get all HEIC/HEIF files from the source folder.
+    Get all supported image files from the source folder.
     
     Args:
-        source_folder (str): Path to the folder containing source HEIC files
+        source_folder (str): Path to the folder containing source image files
         
     Returns:
-        list: List of HEIC file paths sorted alphabetically
+        list: List of image file paths sorted alphabetically
     """
-    patterns = ['*.heic', '*.HEIC', '*.heif', '*.HEIF']
-    heic_files = []
+    patterns = [
+        '*.heic', '*.HEIC', '*.heif', '*.HEIF',  # HEIC/HEIF formats
+        '*.jpg', '*.JPG', '*.jpeg', '*.JPEG',      # JPEG formats
+        '*.png', '*.PNG'                            # PNG formats
+    ]
+    image_files = []
     
     for pattern in patterns:
-        heic_pattern = os.path.join(source_folder, pattern)
-        heic_files.extend(glob.glob(heic_pattern))
+        image_pattern = os.path.join(source_folder, pattern)
+        image_files.extend(glob.glob(image_pattern))
     
-    return sorted(list(set(heic_files)))  # Remove duplicates and sort
+    return sorted(list(set(image_files)))  # Remove duplicates and sort
 
 
-def convert_heic_to_image(heic_path, output_format='PNG', quality=95):
+def convert_image_to_format(image_path, output_format='PNG', quality=95):
     """
-    Convert HEIC file to PIL Image object with metadata preservation.
+    Convert image file to PIL Image object with metadata preservation.
     
     Args:
-        heic_path (str): Path to input HEIC file
+        image_path (str): Path to input image file (HEIC, JPG, or PNG)
         output_format (str): Output format (PNG or JPG)
         quality (int): Quality for JPG format (1-100)
         
@@ -132,8 +136,8 @@ def convert_heic_to_image(heic_path, output_format='PNG', quality=95):
         tuple: (PIL.Image, exif_data) or (None, None) if conversion fails
     """
     try:
-        logging.info(f"Loading HEIC file: {os.path.basename(heic_path)}")
-        img = Image.open(heic_path)
+        logging.info(f"Loading image file: {os.path.basename(image_path)}")
+        img = Image.open(image_path)
         
         # Extract EXIF data before any conversions
         exif_data = None
@@ -160,7 +164,7 @@ def convert_heic_to_image(heic_path, output_format='PNG', quality=95):
         return img, exif_data
         
     except Exception as e:
-        logging.error(f"Failed to convert {heic_path}: {str(e)}")
+        logging.error(f"Failed to convert {image_path}: {str(e)}")
         return None, None
 
 
@@ -211,12 +215,12 @@ def save_as_image(img, output_path, output_format='PNG', quality=95, exif_data=N
         return False
 
 
-def convert_heic_to_pdf(heic_path, output_path, page_size='LETTER'):
+def convert_image_to_pdf(image_path, output_path, page_size='LETTER'):
     """
-    Convert HEIC file to PDF format.
+    Convert image file to PDF format.
     
     Args:
-        heic_path (str): Path to input HEIC file
+        image_path (str): Path to input image file (HEIC, JPG, or PNG)
         output_path (str): Path for output PDF file
         page_size (str): Page size (LETTER or A4)
         
@@ -224,10 +228,10 @@ def convert_heic_to_pdf(heic_path, output_path, page_size='LETTER'):
         bool: True if successful, False otherwise
     """
     try:
-        logging.info(f"Converting to PDF: {os.path.basename(heic_path)}")
+        logging.info(f"Converting to PDF: {os.path.basename(image_path)}")
         
-        # Load the HEIC image
-        img = Image.open(heic_path)
+        # Load the image
+        img = Image.open(image_path)
         
         # Convert RGBA to RGB if necessary
         if img.mode in ('RGBA', 'LA', 'P'):
@@ -272,16 +276,16 @@ def convert_heic_to_pdf(heic_path, output_path, page_size='LETTER'):
         return True
         
     except Exception as e:
-        logging.error(f"Failed to convert {heic_path} to PDF: {str(e)}")
+        logging.error(f"Failed to convert {image_path} to PDF: {str(e)}")
         return False
 
 
 def convert_images(source_folder, output_folder, output_format='PNG', quality=95, page_size='LETTER', clear_output=True):
     """
-    Convert all HEIC images from source folder to specified format in output folder.
+    Convert all images from source folder to specified format in output folder.
     
     Args:
-        source_folder (str): Path to folder containing HEIC files
+        source_folder (str): Path to folder containing image files (HEIC, JPG, PNG)
         output_folder (str): Path to folder for output files
         output_format (str): Output format (PDF, PNG, or JPG)
         quality (int): Quality for JPG format (1-100)
@@ -299,21 +303,21 @@ def convert_images(source_folder, output_folder, output_format='PNG', quality=95
     if clear_output:
         clear_output_folder(output_folder)
     
-    # Get all HEIC files
-    heic_files = get_heic_files(source_folder)
+    # Get all image files
+    image_files = get_image_files(source_folder)
     
-    if not heic_files:
-        logging.warning(f"No HEIC files found in {source_folder}")
+    if not image_files:
+        logging.warning(f"No supported image files found in {source_folder}")
         return {'total': 0, 'successful': 0, 'failed': 0}
     
-    logging.info(f"Found {len(heic_files)} HEIC file(s) to convert")
+    logging.info(f"Found {len(image_files)} image file(s) to convert")
     
     # Convert each file
     successful = 0
     failed = 0
     
-    for heic_file in heic_files:
-        filename = os.path.basename(heic_file)
+    for image_file in image_files:
+        filename = os.path.basename(image_file)
         base_name = os.path.splitext(filename)[0]
         
         # Determine output file extension
@@ -330,9 +334,9 @@ def convert_images(source_folder, output_folder, output_format='PNG', quality=95
         
         # Convert based on format
         if output_format.upper() == 'PDF':
-            success = convert_heic_to_pdf(heic_file, output_path, page_size)
+            success = convert_image_to_pdf(image_file, output_path, page_size)
         else:
-            img, exif_data = convert_heic_to_image(heic_file, output_format, quality)
+            img, exif_data = convert_image_to_format(image_file, output_format, quality)
             if img:
                 success = save_as_image(img, output_path, output_format, quality, exif_data)
             else:
@@ -344,7 +348,7 @@ def convert_images(source_folder, output_folder, output_format='PNG', quality=95
             failed += 1
     
     return {
-        'total': len(heic_files),
+        'total': len(image_files),
         'successful': successful,
         'failed': failed
     }
@@ -353,7 +357,7 @@ def convert_images(source_folder, output_folder, output_format='PNG', quality=95
 def main():
     """Main function to handle command line arguments and execute conversion."""
     parser = argparse.ArgumentParser(
-        description="Convert HEIC images to PDF, PNG, or JPG format",
+        description="Convert images (HEIC, JPG, PNG) to PDF, PNG, or JPG format",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -377,7 +381,7 @@ Examples:
     parser.add_argument(
         '-s', '--source',
         default=default_source,
-        help=f'Source folder containing HEIC files (default: {default_source})'
+        help=f'Source folder containing image files (default: {default_source})'
     )
     
     parser.add_argument(

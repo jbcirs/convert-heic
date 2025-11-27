@@ -215,6 +215,10 @@ images/source/*.heic
 images/source/*.HEIC
 images/source/*.heif
 images/source/*.HEIF
+images/source/*.png
+images/source/*.jpg
+images/source/*.jpeg
+images/source/*.pdf
 images/output/*.pdf
 images/output/*.png
 images/output/*.jpg

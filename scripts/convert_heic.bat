@@ -1,4 +1,5 @@
 @echo off
+setlocal enabledelayedexpansion
 REM Windows batch script to convert HEIC images
 REM This script runs from the scripts directory
 
@@ -21,7 +22,7 @@ if not exist "convert_heic.py" (
 
 REM Check if Python is available
 python --version >nul 2>&1
-if %errorlevel% neq 0 (
+if !errorlevel! neq 0 (
     echo Error: Python is not installed or not in PATH.
     echo Please install Python 3.7 or higher.
     echo.
@@ -35,16 +36,16 @@ echo Found Python version: %PYTHON_VERSION%
 
 REM Check if required packages are installed
 python -c "import pillow_heif" >nul 2>&1
-if %errorlevel% neq 0 (
+if !errorlevel! neq 0 (
     echo.
     echo Required packages are not installed.
     echo Running setup to install dependencies...
     echo.
     cd ..
     python setup.py
-    set SETUP_RESULT=%errorlevel%
+    set SETUP_RESULT=!errorlevel!
     cd src
-    if %SETUP_RESULT% neq 0 (
+    if !SETUP_RESULT! neq 0 (
         echo.
         echo Setup failed. Please check the error messages above.
         echo.
@@ -103,19 +104,19 @@ REM Build command
 set CMD=python convert_heic.py -f %OUTPUT_FORMAT%
 
 if "%FORMAT_CHOICE%"=="2" (
-    if not "%QUALITY%"=="" (
-        set CMD=%CMD% -q %QUALITY%
+    if not "!QUALITY!"=="" (
+        set CMD=!CMD! -q !QUALITY!
     )
 )
 
 if "%FORMAT_CHOICE%"=="3" (
-    if not "%PAGE_SIZE%"=="" (
-        set CMD=%CMD% --page-size %PAGE_SIZE%
+    if not "!PAGE_SIZE!"=="" (
+        set CMD=!CMD! --page-size !PAGE_SIZE!
     )
 )
 
 if /i "%VERBOSE%"=="y" (
-    set CMD=%CMD% -v
+    set CMD=!CMD! -v
 )
 
 REM Run the converter
@@ -125,10 +126,10 @@ echo Converting HEIC images to %FORMAT_NAME%
 echo ======================================
 echo.
 
-%CMD%
+!CMD!
 
 echo.
-if %errorlevel% equ 0 (
+if !errorlevel! equ 0 (
     echo ======================================
     echo Conversion completed successfully!
     echo ======================================
