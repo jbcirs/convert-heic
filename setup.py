@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Setup script for HEIC Image Converter Tool
+Setup script for Image Converter Tool
 
 This script helps set up the environment and install dependencies.
 """
@@ -104,7 +104,7 @@ def create_readme_files():
 def main():
     """Run the setup process."""
     print("=" * 60)
-    print("HEIC Image Converter Tool - Setup")
+    print("Image Converter Tool - Setup")
     print("=" * 60)
     print()
     

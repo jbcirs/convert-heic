@@ -43,9 +43,9 @@ def setup_logging(log_level=logging.INFO):
     logs_dir = os.path.join(os.path.dirname(script_dir), 'logs')
     os.makedirs(logs_dir, exist_ok=True)
     
-    # Create log filename with timestamp
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    log_file = os.path.join(logs_dir, f'convert_heic_{timestamp}.log')
+    # Create log file with timestamp
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    log_file = os.path.join(logs_dir, f'convert_images_{timestamp}.log')
     
     # Configure logging to both file and console
     logging.basicConfig(

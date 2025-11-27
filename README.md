@@ -1,4 +1,4 @@
-# HEIC Image Converter Tool
+# Image Converter Tool
 
 A Python utility to convert HEIC/HEIF images to PDF, PNG, or JPG format with comprehensive logging and error handling.
 
@@ -29,7 +29,7 @@ A Python utility to convert HEIC/HEIF images to PDF, PNG, or JPG format with com
 
    ```bash
    git clone <repository-url>
-   cd convert-heic
+   cd convert-images
    ```
 
 2. Run the setup script (automatically installs all dependencies):
@@ -140,7 +140,7 @@ See `src/example_usage.py` for more examples.
 ## File Organization
 
 ```text
-convert-heic/
+convert-images/
 ├── README.md                    # This file
 ├── requirements.txt             # Python dependencies
 ├── setup.py                     # Setup script
@@ -151,7 +151,7 @@ convert-heic/
 │   └── output/                  # Converted files appear here
 │       └── README.md
 ├── logs/                        # Log files (created automatically)
-│   └── convert_heic_*.log
+│   └── convert_images_*.log
 ├── scripts/                     # Batch and shell scripts
 │   ├── convert_heic.bat        # Windows batch script
 │   └── convert_heic.sh         # Unix/Linux/macOS shell script
@@ -205,7 +205,7 @@ convert-heic/
 
 Every conversion run creates a timestamped log file in the `logs/` folder:
 
-- **Filename format**: `convert_heic_YYYYMMDD_HHMMSS.log`
+- **Filename format**: `convert_images_YYYYMMDD_HHMMSS.log`
 - **Log levels**: INFO (default) or DEBUG (with `-v` flag)
 - **Contents**: 
   - Source and output paths
