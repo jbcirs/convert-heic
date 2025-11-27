@@ -205,3 +205,21 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+
+# Logs directory
+logs/
+
+# Source and output images (keep only README files)
+images/source/*.heic
+images/source/*.HEIC
+images/source/*.heif
+images/source/*.HEIF
+images/output/*.pdf
+images/output/*.png
+images/output/*.jpg
+images/output/*.jpeg
+
+# Keep README files
+!images/source/README.md
+!images/output/README.md
